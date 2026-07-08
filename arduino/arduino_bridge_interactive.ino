@@ -7,10 +7,6 @@
   SoftwareSerial on two spare pins for the FPGA link instead, leaving
   hardware Serial (pins 0/1) free for the USB Serial Monitor.
 
-  TRADE-OFF: SoftwareSerial on AVR isn't reliable at 115200 baud - this
-  uses 9600 baud instead. The FPGA side's BAUD_RATE parameter must be
-  changed to match (see basys3_top.v).
-
   Wiring change from before:
     FPGA JA1 (UART RX)  <- Arduino pin 9 (SoftwareSerial TX), THROUGH DIVIDER
     FPGA JA2 (UART TX)  -> Arduino pin 8 (SoftwareSerial RX), direct wire
@@ -86,7 +82,7 @@ void loop() {
                 uint8_t b = fpgaLink.read();
 
                 if (b == 0x02) {
-                    // AYUSH message incoming - read and print the 5 characters
+                   //AYUSH
                     char msg[6];
                     for (int i = 0; i < 5; i++) {
                         unsigned long char_wait = millis();
