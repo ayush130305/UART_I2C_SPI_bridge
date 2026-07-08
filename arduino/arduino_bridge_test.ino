@@ -1,28 +1,6 @@
 /*
   arduino_bridge_test.ino
-
-  Dual role, matching the flow: Arduino(UART) -> FPGA -> SPI -> Arduino(SPI slave)
-
-  1) Sends a UART command to the FPGA every 2 seconds, using the bridge's
-     command byte format: [7:6]=engine(00=SPI), [5]=CPOL, [4]=CPHA,
-     [3:0]=length-1. This sketch sends a single-byte SPI command
-     (length=1) with a fixed data byte.
-
-  2) Simultaneously acts as a real SPI SLAVE (NOT the normal SPI.h master
-     mode) - the FPGA's spi_master drives SCK/MOSI/CS, and this Arduino
-     responds on MISO, using the AVR's hardware SPI peripheral directly
-     in slave mode.
-
-  IMPORTANT HARDWARE NOTE: an Uno/Nano has only ONE hardware UART, and
-  it's used here to talk to the FPGA (pins 0/1). This means you can't
-  ALSO use Serial.println() for USB debug output without conflicting
-  with the FPGA link - that's exactly why the FPGA's 7-segment display
-  matters here: it's your visibility into what's happening, since you
-  can't just open the Arduino Serial Monitor at the same time.
-  (If you have an Arduino Mega, it has multiple hardware UARTs - you
-  could dedicate Serial1 to the FPGA and keep Serial free for USB debug
-  prints instead. Not done here to keep this portable to an Uno/Nano.)
-
+  
   Wiring (Uno/Nano pin numbers):
     Pin 0 (RX)  <- FPGA JA2 (UART TX)         direct wire
     Pin 1 (TX)  -> FPGA JA1 (UART RX)         THROUGH THE VOLTAGE DIVIDER
@@ -49,8 +27,7 @@ void setup() {
     pinMode(MISO, OUTPUT);   // only MISO is driven by us; SCK/MOSI/SS are inputs (master-driven)
     pinMode(MOSI, INPUT);
     pinMode(SCK, INPUT);
-    pinMode(SS, INPUT);      // SS MUST be an input for slave mode to work correctly
-
+    pinMode(SS, INPUT);     
     SPCR = (1 << SPE) | (1 << SPIE);  // enable SPI, enable SPI interrupt, MSTR=0 -> slave mode
     SPDR = spi_response_byte;         // preload the first byte the master will read
 
@@ -78,12 +55,7 @@ void loop() {
         // The 1 data byte to send over SPI
         send_uart_byte(0x3C);
 
-        // Wait for a byte over UART, with a timeout so a single missed
-        // response can't permanently freeze the sketch. Since the
-        // switch-triggered "AYUSH" message can arrive at any time on
-        // this same link, we check for its marker byte (0x02) first and
-        // consume it separately - otherwise it would get mistaken for
-        // the real SPI response.
+     
         uint8_t fpga_response = 0;
         bool got_response = false;
         unsigned long wait_start = millis();
@@ -122,7 +94,6 @@ void loop() {
         // will simply try again on the next 2-second cycle rather than
         // hanging forever.
 
-        // Change what we'll respond with next time, so each round is visibly different
         spi_response_byte++;
     }
 }
