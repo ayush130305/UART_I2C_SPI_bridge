@@ -38,18 +38,7 @@ result bytes (SPI is full-duplex, one result per input byte).
   read-only, and combined write-then-read (register-read pattern, via
   repeated-START) depending on which counts are zero.
 
-## Repo structure
-
-```
-rtl/          Synthesizable Verilog - the actual design
-constraints/  Vivado XDC for the Basys 3
-tb/           Plain Verilog testbenches (Vivado/XSim compatible)
-cocotb/       Python/cocotb testbenches (Icarus Verilog)
-arduino/      Arduino sketches used as test peripherals/host
-docs/         Session notes, design decisions, bug log
-```
-
-### rtl/
+### rtl
 
 | File | Purpose |
 |---|---|
@@ -63,7 +52,7 @@ docs/         Session notes, design decisions, bug log
 | `debounce.v` / `switch_string_sender.v` | Switch-triggered "AYUSH" UART message demo |
 | `uart_loopback.v` | TX→RX loopback wrapper (early-stage sanity module) |
 
-## Building for hardware (Vivado)
+## Vivado Build
 
 1. Add everything in `rtl/` as design sources, `constraints/basys3_top.xdc`
    as the constraints file, with `basys3_top` set as the top module.
@@ -110,7 +99,7 @@ on PATH. Waveforms auto-generate via `waves=True` in each runner
 | SDA (A4) | JA9 - direct, + ~4.7-10k ohm pull-up to 3.3V |
 | SCL (A5) | JA10 - direct, + ~4.7-10k ohm pull-up to 3.3V |
 
-Plus a shared ground wire between both boards (required, easy to forget).
+Plus a shared ground wire between both boards 
 
 **Divider circuit** (for the two signals Arduino drives into the FPGA):
 ```
@@ -118,9 +107,7 @@ Plus a shared ground wire between both boards (required, easy to forget).
                    |
              FPGA pin (~3.3V)
 ```
-Tested with R1=1k/R2=2k and with R1=10k/R2=10k+10k (ratio is what
-matters, not absolute value).
-
+Tested with R1=1k/R2=2k and with R1=10k/R2=10k+10k 
 ### Arduino sketches
 
 | Sketch | Role |
@@ -136,9 +123,5 @@ matters, not absolute value).
 - DONE: SPI (all 4 modes, multi-byte continuous cs_n) - verified in simulation and hardware
 - DONE: I2C (write/read/combined via repeated-START) - verified in simulation and hardware
 - DONE: Dispatcher routing both engines - verified in simulation and hardware
-- TODO: Error handling for malformed commands
-- TODO: I2C clock stretching
-- TODO: Constrained-random/coverage testing
 
-See `docs/` for the full bug log and design-decision notes from
-development.
+
