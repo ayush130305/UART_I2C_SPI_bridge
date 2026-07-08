@@ -10,8 +10,6 @@
   So the round trip is: this Arduino -> UART -> FPGA -> I2C -> back to
   this same Arduino -> I2C response -> FPGA -> UART -> back to this Arduino.
 
-  These two roles use completely separate AVR hardware peripherals
-  (USART for UART, TWI for I2C) - no conflict, same as UART+SPI before.
 
   Wiring: NO VOLTAGE DIVIDER NEEDED for the I2C lines (open-drain, both
   sides only ever pull low or release):
@@ -37,8 +35,7 @@
 const uint8_t I2C_SLAVE_ADDRESS = 0x50;
 
 volatile uint8_t last_i2c_received = 0x00;
-volatile uint8_t i2c_response_byte = 0x68;  // WHO_AM_I-style canned response, increments each round
-
+volatile uint8_t i2c_response_byte = 0x68;  
 unsigned long last_send_time = 0;
 const unsigned long SEND_INTERVAL_MS = 2000;
 
@@ -79,7 +76,7 @@ void loop() {
         send_uart_byte(0b01100000);
         send_uart_byte(I2C_SLAVE_ADDRESS);  // device address
         send_uart_byte(1);                   // write_count = 1 (a register address follows)
-        send_uart_byte(0x0F);                // arbitrary "register address" to write
+        send_uart_byte(0x0C);                // arbitrary "register address" to write
 
         // Expect: 1 read byte back, then 1 status byte
         uint8_t read_byte = 0, status_byte = 0;
