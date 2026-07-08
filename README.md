@@ -79,6 +79,6 @@ result bytes (SPI is full-duplex, one result per input byte).
 
 ![Bridge integration zoom](readme_update/docs/waveforms/bridge_integration_zoom1.png)
 
-**Dispatcher branch confirmation (zoomed):** `disp_inst.state` visibly takes a different path (`05→06→07→09` vs `05→07→09`) depending on whether the command uses R/W=0 or R/W=1 — confirmed at the signal level, not just inferred from a PASS message.
+**Dispatcher branch confirmation (zoomed):** `disp_inst.state` visibly takes a different path (`05→06→07→09` vs `05→07→09`) depending on whether the command uses R/W=0 or R/W=1.
 
 ![Dispatcher branch confirmation](readme_update/docs/waveforms/bridge_dispatcher_branch_zoom.png)
