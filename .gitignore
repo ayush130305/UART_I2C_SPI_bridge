@@ -1,0 +1,21 @@
+# Vivado project artifacts (regenerated from sources + XDC)
+*.jou
+*.log
+*.str
+.Xil/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.srcs/*.xpr
+vivado*.jou
+vivado*.log
+
+# cocotb / Icarus build output
+sim_build/
+*.vvp
+*.fst
+results.xml
+__pycache__/
+*.pyc
